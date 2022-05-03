@@ -1,6 +1,7 @@
 from IPython.display import display, Markdown, Latex
 import math
 import platform
+from decimal import Decimal
 
 def ejercicio_05(valor_referencia, suma_objetivo):
 
@@ -47,25 +48,36 @@ def ejercicio_07():
 
 # Ejercicio 8
 
-x = [2.718281828, -3.141592654, 1.414213562, 0.5772156649, 0.3010299957]
-y = [1486.2497, 878366.9879, -22.37429, 4773714.647, 0.000185049]
+x = [Decimal(2.718281828), Decimal(-3.141592654), Decimal(1.414213562), Decimal(0.5772156649), Decimal(0.3010299957)]
+y = [Decimal(1486.2497), Decimal(878366.9879), Decimal(-22.37429), Decimal(4773714.647), Decimal(0.000185049)]
 
-def punto_a():
-    x_por_y_a = 0
+def armar_arreglo(x, y):
+    lista = []
     for i in range(len(x)):
-        valor = x[i] * y[i]
-        print(f"iteracion [{i+1}] suma acumulada [{x_por_y_a:+}] valor a sumar [{valor:+}]")
-        x_por_y_a += x[i] * y[i]
+        lista.append(x[i] * y[i])
 
-    print(f"resultado final {x_por_y_a:+}\n")
+    return lista
 
-def punto_b():
-    x_por_y_b = 0
-    for i in range(len(x), 0, -1):
-        valor = x[i - 1] * y[i - 1]
-        print(f"iteracion [{-1*(i-6)}] suma acumulada [{x_por_y_b:+}] valor a sumar [{valor:+}]")
-        x_por_y_b += x[i - 1] * y[i - 1]
-    print(f"resultado final {x_por_y_b:+}\n")
+def punto_a(arr):
+    x_por_y_a = Decimal(0)
+
+    for i in range(len(arr)):
+        # valor = x[i] * y[i]
+        # print(f"iteracion [{i+1}] suma acumulada [{x_por_y_a:+}] valor a sumar [{valor:+}]")
+        x_por_y_a += arr[i]
+
+    # print(f"resultado final {x_por_y_a:+}\n")
+    return x_por_y_a
+
+def punto_b(arr):
+    x_por_y_b = Decimal(0)
+    for i in range(len(arr), 0, -1):
+        # valor = x[i - 1] * y[i - 1]
+        # print(f"iteracion [{-1*(i-6)}] suma acumulada [{x_por_y_b:+}] valor a sumar [{valor:+}]")
+        x_por_y_b += arr[i - 1]
+    # print(f"resultado final {x_por_y_b:+}\n")
+
+    return x_por_y_b
 
 def punto_c():
     pos = []
@@ -151,3 +163,13 @@ def y_n(n):
         return 1
     else:
         return (math.e - n * (y_n(n - 1)))
+
+
+if __name__ == "__main__":
+    el_arr = armar_arreglo(x, y)
+
+    vara = punto_a(el_arr)
+    varb = punto_b(el_arr)
+
+    print(type(vara), vara)
+    print(type(varb), varb)
