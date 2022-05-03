@@ -1,6 +1,6 @@
 from IPython.display import display, Markdown, Latex
 import math
-import platform
+from mpmath import mpf
 
 def ejercicio_05(valor_referencia, suma_objetivo):
 
@@ -32,7 +32,7 @@ def ejercicio_06():
 
     i = 1
     while(i <= 10):
-        display(Latex('$S_{' + str(i) + '}=f(8^{' + str(-i) + '}) = ' + str(f(8**(-i))) + ' \implies g(8^{' + str(-i) + '})$ = ' + str(g(8**(-i)))))
+        # display(Latex('$S_{' + str(i) + '}=f(8^{' + str(-i) + '}) = ' + str(f(8**(-i))) + '\implies g(8^{' + str(-i) + '})$ = ' + str(g(8**(-i)))))
         i += 1
 
 def ejercicio_07():
@@ -43,77 +43,140 @@ def ejercicio_07():
         eps = eps / 2
 
     eps = eps / 2
-    display(Latex('$\epsilon_M = 2^{-' + str(n) + '} = ' + str(eps) + '$ para maquina de ' + str(platform.architecture()[0])))
 
 # Ejercicio 8
 
-x = [2.718281828, -3.141592654, 1.414213562, 0.5772156649, 0.3010299957]
-y = [1486.2497, 878366.9879, -22.37429, 4773714.647, 0.000185049]
+res_real = mpf(0.0008909545339942893)
+res_punto_a = mpf(0)
+res_punto_b = mpf(0)
+res_punto_c = mpf(0)
+res_punto_d = mpf(0)
 
-def punto_a():
-    x_por_y_a = 0
+x = [mpf(2.718281828), mpf(-3.141592654), mpf(1.414213562), mpf(0.5772156649), mpf(0.3010299957)]
+y = [mpf(1486.2497), mpf(878366.9879), mpf(-22.37429), mpf(4773714.647), mpf(0.000185049)]
+
+x_por_y = []
+
+x_por_y_ref = [mpf(4040.0455513804516), mpf(-2759471.2767027468866), mpf(-31.64202435812098), mpf(2755462.8740109737903), mpf(5.57052996742893e-5)]
+
+def multiplicar(arr_a, arr_b):
+    res = []
     for i in range(len(x)):
-        valor = x[i] * y[i]
-        print(f"iteracion [{i+1}] suma acumulada [{x_por_y_a:+}] valor a sumar [{valor:+}]")
-        x_por_y_a += x[i] * y[i]
+        res.append(x[i] * y[i])
 
-    print(f"resultado final {x_por_y_a:+}\n")
+    return res
 
-def punto_b():
-    x_por_y_b = 0
-    for i in range(len(x), 0, -1):
-        valor = x[i - 1] * y[i - 1]
-        print(f"iteracion [{-1*(i-6)}] suma acumulada [{x_por_y_b:+}] valor a sumar [{valor:+}]")
-        x_por_y_b += x[i - 1] * y[i - 1]
-    print(f"resultado final {x_por_y_b:+}\n")
+def punto_a(arr):
+    valor = mpf(0)
+    acum = mpf(0)
+    for i in range(len(arr)):
+        temp_acum = acum
+        valor = arr[i]
+        acum += arr[i]
+        print(f"iteracion [{i+1}] suma previa [{repr(temp_acum)}], valor a sumar [{repr(valor)}] nuevo valor acumulada [{repr(acum)}] ")
 
-def punto_c():
+    print(f"resultado final {repr(acum)}")
+    return acum
+
+def punto_b(arr):
+    acum = mpf(0)
+    valor = mpf(0)
+    for i in range(len(arr), 0, -1):
+        temp_acum = acum
+        valor = arr[i - 1]
+        acum += arr[i - 1]
+        print(f"iteracion [{i+1}] suma previa [{repr(temp_acum)}], valor a sumar [{repr(valor)}] nuevo valor acumulada [{repr(acum)}] ")
+
+    print(f"resultado final {repr(acum)}")
+    return acum
+
+
+def punto_c(arr):
     pos = []
     neg = []
-    for i in range(len(x)):
-        x_por_y = x[i] * y[i]
-        if(x_por_y > 0):
-            pos.append(x_por_y)
+    item = mpf(0)
+    for i in range(len(arr)):
+        item = arr[i]
+        if(item > 0):
+            pos.append(item)
         else:
-            neg.append(x_por_y)
+            neg.append(item)
 
-    pos.sort()  # ordeno creciente
-    pos.reverse()  # luego decreciente
-    neg.sort()  # ordeno creciente
+    # Ordeno el array de positivos de Mayor a Menor
+    pos_sorted = sorted(pos, reverse=True)
 
-    xy_list = list(pos) + list(neg)
-    print("xy_list: ", xy_list)
-    x_por_y_c = 0
-    for i in range(len(xy_list)):
-        valor = xy_list[i]
-        print(f"iteracion [{i+1}] suma acumulada [{x_por_y_c:+}] valor a sumar [{valor:+}]")
-        x_por_y_c += xy_list[i]
+    # Ordeno el array de negativos de Menor a Mayor
+    neg_sorted = sorted(neg, reverse=False)
 
-    print(f"resultado final {x_por_y_c:+}\n")
+    print(f"pos_sorted {pos_sorted}")
+    print(f"neg_sorted {neg_sorted}")
 
-def punto_d():
+    total = mpf(0)
+    valor = mpf(0)
+    total_pos = mpf(0)
+    total_neg = mpf(0)
+
+    for i in range(len(pos_sorted)):
+        temp_acum = total_pos
+        valor = pos_sorted[i]
+        total_pos += pos_sorted[i]
+        print(f"iteracion [{i+1}] suma previa [{repr(temp_acum)}], valor a sumar [{repr(valor)}] nuevo valor acumulada [{repr(total_pos)}] ")
+
+    print("")
+
+    for i in range(len(neg_sorted)):
+        temp_acum = total_neg
+        valor = neg_sorted[i]
+        total_neg += neg_sorted[i]
+        print(f"iteracion [{i+1}] suma previa [{repr(temp_acum)}], valor a sumar [{repr(valor)}] nuevo valor acumulada [{repr(total_neg)}] ")
+
+    print(f"ultima operacion {repr(total_pos)} + {repr(total_neg)}")
+    total = total_pos + total_neg
+    print(f"resultado final {repr(total)}")
+    return total
+
+def punto_d(arr):
     pos = []
     neg = []
-    for i in range(len(x)):
-        x_por_y = x[i] * y[i]
-        if(x_por_y > 0):
-            pos.append(x_por_y)
+    item = mpf(0)
+    for i in range(len(arr)):
+        item = arr[i]
+        if(item > 0):
+            pos.append(item)
         else:
-            neg.append(x_por_y)
+            neg.append(item)
 
-    pos.sort()  # ordeno creciente
-    neg.sort()  # ordeno creciente
-    neg.reverse()  # luego decreciente
+    # Ordeno el array de positivos de Menor a Mayor
+    pos_sorted = sorted(pos, reverse=False)
+    # Ordeno el array de negativos de Mayor a Menor
+    neg_sorted = sorted(neg, reverse=True)
 
-    xy_list = list(pos) + list(neg)
-    print("xy_list: ", xy_list)
-    x_por_y_d = 0
-    for i in range(len(xy_list)):
-        valor = xy_list[i]
-        print(f"iteracion [{i}] suma acumulada [{x_por_y_d:+}] valor a sumar [{valor:+}]")
-        x_por_y_d += xy_list[i]
+    print(f"pos_sorted {pos_sorted}")
+    print(f"neg_sorted {neg_sorted}")
 
-    print(f"resultado final {x_por_y_d:+}\n")
+    total = mpf(0)
+    valor = mpf(0)
+    total_pos = mpf(0)
+    total_neg = mpf(0)
+
+    for i in range(len(pos_sorted)):
+        temp_acum = total_pos
+        valor = pos_sorted[i]
+        total_pos += pos_sorted[i]
+        print(f"iteracion [{i+1}] suma previa [{repr(temp_acum)}], valor a sumar [{repr(valor)}] nuevo valor acumulada [{repr(total_pos)}] ")
+
+    print("")
+
+    for i in range(len(neg_sorted)):
+        temp_acum = total_neg
+        valor = neg_sorted[i]
+        total_neg += neg_sorted[i]
+        print(f"iteracion [{i+1}] suma previa [{repr(temp_acum)}], valor a sumar [{repr(valor)}] nuevo valor acumulada [{repr(total_neg)}] ")
+
+    print(f"ultima operacion {repr(total_pos)} + {repr(total_neg)}")
+    total = total_pos + total_neg
+    print(f"resultado final {repr(total)}")
+    return total
 
 # Ejercicio 9
 
@@ -151,3 +214,7 @@ def y_n(n):
         return 1
     else:
         return (math.e - n * (y_n(n - 1)))
+
+
+if __name__ == "__main__":
+    pass
