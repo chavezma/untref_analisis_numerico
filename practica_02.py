@@ -2,7 +2,6 @@ import random
 import numpy as np
 from operator import itemgetter
 
-from pyparsing import java_style_comment
 import scipy
 import scipy.linalg  # SciPy Linear Algebra Library
 from numpy import identity, matmul
@@ -19,8 +18,8 @@ def normaInfinitoCerrada(matriz):
 
 def generacionVectoresAleatorios(tamanio_matriz):
     vector_x = np.random.uniform(-1, 1, tamanio_matriz)
-    # Cargamos un 1 para que la norma infinito resulte 1, ya que todos seran menores o iguales a 1 (en modulo)
-    vector_x[random.randint(0, tamanio_matriz - 1)] = 1
+    # Cargamos un 1 o -1 para que la norma infinito resulte 1, ya que todos seran menores o iguales a 1 (en modulo)
+    vector_x[random.randint(0, tamanio_matriz - 1)] = 1 if random.randint(0, 1000) % 2 == 0 else -1
     return vector_x
 
 
