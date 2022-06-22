@@ -13,10 +13,10 @@ def df3(t, x):
     return -np.cos(t) - (df2(t, x) * np.cos(x)) + ((df(t, x)**2) * np.sin(x)) + 2
 
 def df4(t, x):
-    return np.sin(t) + (((df(t, x)**3) - df3(t, x)) * np.cos(x)) + (3 * df(t, x) * df2(t, x) * np.sin(x))
+    return np.sin(t) + (df(t, x)**3 - df3(t, x)) * np.cos(x) + 3 * df(t, x) * df2(t, x) * np.sin(x)
 
 def f(t, x, h):
-    return x + h * (df(t, x) + (h / 2) * (df2(t, x) + (h / 3) * (df3(t, x) + ((h / 4) * df4(t, x)))))
+    return x + h * (df(t, x) + (h / 2) * (df2(t, x) + (h / 3) * (df3(t, x) + (h / 4) * df4(t, x))))
 
 def solve_taylor(t_cero, x_cero, paso, iteraciones):
     lst_f = []
